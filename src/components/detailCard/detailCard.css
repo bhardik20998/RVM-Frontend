@@ -7,24 +7,24 @@
   font-family: Raleway, sans-serif;
 }
 
-body {
-  background: linear-gradient(90deg, #c7c5f4, #776bcc);
+.homepage-input::placeholder {
+  font-size: 16px;
 }
-
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  margin-top: 10em;
+}
+.input:not(:placeholder-shown) {
+  margin-left: 20px; /* Adjust the margin size as needed */
 }
 
 .screen {
-  background: linear-gradient(90deg, #5d54a4, #7c78b8);
   position: relative;
-  height: 26em;
+  height: 42em;
   width: 40em;
-  box-shadow: 0px 0px 24px #5c5696;
+
+  margin-top: 3em;
 }
 
 .screen__content {
@@ -50,28 +50,18 @@ body {
 }
 
 .screen__background__shape1 {
-  height: 520px;
-  width: 520px;
+  height: 600px;
+  width: 600px;
   background: #fff;
-  top: -50px;
-  right: 120px;
+
   border-radius: 0 72px 0 0;
 }
 
 .screen__background__shape2 {
   height: 220px;
   width: 220px;
-  background: #6c63ac;
-  top: -172px;
-  right: 0;
-  border-radius: 32px;
-}
 
-.screen__background__shape3 {
-  height: 540px;
-  width: 190px;
-  background: linear-gradient(270deg, #5d54a4, #6a679e);
-  top: -24px;
+  top: -172px;
   right: 0;
   border-radius: 32px;
 }
@@ -79,7 +69,7 @@ body {
 .screen__background__shape4 {
   height: 400px;
   width: 200px;
-  background: #7e7bb9;
+
   top: 420px;
   right: 50px;
   border-radius: 60px;
@@ -126,7 +116,7 @@ body {
   padding: 16px 20px;
   border-radius: 26px;
   border: 1px solid #d4d3e8;
-  text-transform: uppercase;
+
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -170,9 +160,125 @@ body {
   padding: 20px 10px;
   color: #fff;
   text-decoration: none;
-  text-shadow: 0px 0px 8px #7875b5;
 }
 
 .social-login__icon:hover {
   transform: scale(1.5);
+}
+
+/* ----------------
+    Global input
+   ---------------- */
+
+.Toggle input[type="checkbox"],
+.Radio input[type="radio"],
+.Rating input[type="radio"] {
+  position: absolute;
+  left: -100vw;
+}
+
+.Toggle input[type="checkbox"] + label,
+.Radio input[type="radio"] + label,
+.Rating input[type="radio"] + label {
+  position: relative;
+  display: block;
+  line-height: 3rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.Toggle input[type="checkbox"] + label::before,
+.Toggle input[type="checkbox"] + label::after,
+.Radio input[type="radio"] + label::before,
+.Radio input[type="radio"] + label::after,
+.Rating input[type="radio"] + label::before,
+.Rating input[type="radio"] + label::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  transition: 0.5s;
+}
+
+/* large */
+.Color__large input[type="color"] + label,
+.Toggle__large input[type="checkbox"] + label,
+.Radio__large input[type="radio"] + label,
+.Range__large input[type="range"] + label,
+.Rating__large .Rating_label {
+  font-size: 2rem;
+  line-height: 6rem;
+}
+
+/* ----------------
+    File input
+   ---------------- */
+
+/* ----------------
+    Color input
+   ---------------- */
+
+/* ----------------
+    Rating input
+   ---------------- */
+
+/* ----------------
+    Toggles input
+   ---------------- */
+
+.Toggle input[type="checkbox"] + label {
+  padding-left: 5rem;
+}
+
+.Toggle input[type="checkbox"] + label::before {
+  width: 4rem;
+  aspect-ratio: 2 / 1;
+  border-radius: 1rem;
+  background: #eee;
+}
+
+.Toggle input[type="checkbox"] + label::after {
+  left: 0.25rem;
+  width: 1.4rem;
+}
+
+.Toggle input[type="checkbox"]:checked + label::after {
+  animation: toggle 0.5s linear;
+  transform: translate(125%, -50%);
+}
+
+/* ----------------
+    Bubble display
+   ---------------- */
+
+.Toggle input[type="checkbox"] + label::after,
+.Radio input[type="radio"] + label::after,
+.Rating input[type="radio"] + label::after,
+.Rating input[type="radio"]:checked ~ label > div::before,
+.Rating input[type="radio"]:checked ~ label > div::after,
+.Range input[type="range"]::-webkit-slider-thumb,
+.Color input::-webkit-color-swatch {
+  aspect-ratio: 1 / 1;
+  border: 0.1rem solid #fff;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 30%, #fff, rgba(0, 0, 0, 0) 25%),
+    radial-gradient(
+      circle at 60% 55%,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(255, 0, 255, 0.8) 100%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 0, 0, 0) 40%,
+      rgba(0, 255, 255, 0.2) 60%,
+      rgba(0, 0, 0, 0) 68%
+    ),
+    radial-gradient(
+      circle at 50% 55%,
+      rgba(0, 0, 0, 0) 35%,
+      rgba(255, 255, 0, 0.2) 45%,
+      rgba(0, 0, 0, 0) 55%
+    );
 }

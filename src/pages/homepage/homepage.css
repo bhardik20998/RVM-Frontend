@@ -1,9 +1,11 @@
 .center-container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+
+  justify-content: flex-end;
   align-items: center;
-  height: 100vh;
+}
+.homepage-div {
+  background: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
 }
 
 .button-33 {

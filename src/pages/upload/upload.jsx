@@ -17,11 +17,12 @@ const UploadFile = () => {
   const [rows, setRows] = useState([]);
   const [sheetData, setSheetDate] = useState(null);
   const [preview, setPreview] = useState([
-    "city",
+    "City",
     "Make",
-    "body_type",
-    "odometer_reading",
-    "vehicle_age",
+    "Body Type",
+    "Odometer Reading",
+    "Tenure",
+    "Retail",
   ]);
   const navigate = useNavigate();
 
@@ -49,11 +50,12 @@ const UploadFile = () => {
   useEffect(() => {
     setSheetDate({
       columnNames: [
-        "city",
+        "City",
         "Make",
-        "body_type",
-        "odometer_reading",
-        "vehicle_age",
+        "Body Type",
+        "Odometer Reading",
+        "Tenure",
+        "Retail",
       ],
     });
     postApi(APIAddress.DELETEMASTERDATA);
@@ -90,11 +92,11 @@ const UploadFile = () => {
       columnNames: rows[0],
       dataRows: rows.slice(1).filter((row) => row.length > 0),
     };
-    localStorage.setItem("model", selectedOption);
+    localStorage.setItem("Model", selectedOption);
     if (selectedOption == "existingModel") {
       if (
         arraysHaveSameElements(
-          ["city", "Model", "odometer_reading", "vehicle_age"],
+          ["City", "Model", "Odometer Reading", "Tenure", "Retail"],
           jsonData.columnNames
         )
       ) {
@@ -113,7 +115,7 @@ const UploadFile = () => {
     } else if (selectedOption == "newModel") {
       if (
         arraysHaveSameElements(
-          ["city", "Make", "body_type", "odometer_reading", "vehicle_age"],
+          ["City", "Make", "Body Type", "Odometer Reading", "Tenure", "Retail"],
           jsonData.columnNames
         )
       ) {
@@ -137,16 +139,17 @@ const UploadFile = () => {
   const handleRadioChange = (event) => {
     if (event.target.value == "existingModel") {
       setSheetDate({
-        columnNames: ["city", "Model", "odometer_reading", "vehicle_age"],
+        columnNames: ["City", "Model", "Odometer Reading", "Tenure", "Retail"],
       });
     } else {
       setSheetDate({
         columnNames: [
-          "city",
+          "City",
           "Make",
-          "body_type",
-          "odometer_reading",
-          "vehicle_age",
+          "Body Type",
+          "Odometer Reading",
+          "Tenure",
+          "Retail",
         ],
       });
     }
@@ -157,7 +160,12 @@ const UploadFile = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#dfdada", height: "100%" }}>
+    <div
+      style={{
+        background: "white",
+        height: "100%",
+      }}
+    >
       <div className="navbar-main-div">
         <NavigationBar></NavigationBar>
       </div>

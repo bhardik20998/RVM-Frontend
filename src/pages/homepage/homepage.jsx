@@ -3,6 +3,7 @@ import NavigationBar from "../../components/navigationBar/navigationBar";
 import "./homepage.css";
 import { useNavigate } from "react-router-dom";
 import DetailCard from "../../components/detailCard/detailCard";
+import NumberInput from "../../components/inputCommaSeperator/inputBox";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -11,10 +12,20 @@ const Homepage = () => {
     navigate("/upload-file");
   };
   return (
-    <div>
+    <div className="homepage-div">
       <NavigationBar></NavigationBar>
-      <div>
-        <div className="center-container" style={{}}>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div>
+          <img
+            style={{
+              width: "45em",
+
+              marginTop: "4em",
+            }}
+            src="src/assets/homepage_background.png"
+          ></img>
+        </div>
+        <div className="center-container">
           <div className="card-homepage">
             <DetailCard></DetailCard>
           </div>
@@ -37,6 +48,13 @@ const Homepage = () => {
             New Model Launches
           </button> */}
         </div>
+      </div>
+      <div style={{ display: "flex", marginLeft: "1em" }}>
+        <span style={{ marginBottom: "3px" }}>Powered by </span>
+        <img
+          style={{ width: "3em", marginLeft: "4px" }}
+          src="src/assets/logo-dhurin.png"
+        ></img>
       </div>
     </div>
   );

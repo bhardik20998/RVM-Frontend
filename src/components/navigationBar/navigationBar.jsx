@@ -18,32 +18,48 @@ const NavigationBar = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#1f306e", borderRadius: "10px" }}>
+    <div
+      style={{
+        background: "white",
+        borderRadius: "10px",
+        height: "6em",
+      }}
+    >
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           marginTop: "0vh",
-          padding: "3%",
         }}
       >
-        <div style={{ marginLeft: "2vw" }}>
-          <strong style={{ fontSize: "1.8rem", color: "white" }}>
-            Residual Value Model
-          </strong>
+        <div style={{ marginLeft: "3em" }}>
+          <img
+            style={{ width: "10em", height: "3.4em", marginTop: "16px" }}
+            src="src/assets/logo-finance.png"
+          ></img>
+        </div>
+
+        <div>
+          <img
+            style={{ width: "23em" }}
+            src="src/assets/logo_transparent.png"
+          ></img>
         </div>
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
-            justifyContent: "space-around",
+            justifyContent: "space-between",
+            marginTop: "1.3em",
+            marginRight: "4em",
+            width: "13em",
           }}
         >
           <a className="underLine2 hide_on_responsive" href="" onClick={home}>
-            <Button style={{ color: "white" }}>Home</Button>
+            <Button style={{ color: "black" }}>Home</Button>
           </a>
           <a className="underLine2 hide_on_responsive" onClick={bulkUpload}>
-            <Button style={{ color: "white" }}> Bulk-Upload</Button>
+            <Button style={{ color: "black" }}> Bulk-Upload</Button>
           </a>
         </div>
       </div>
