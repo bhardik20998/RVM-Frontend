@@ -23,13 +23,16 @@ const UploadFile = () => {
     "Odometer Reading",
     "Tenure",
     "Retail",
+    "Transmission Type",
+    "Fuel Type",
+    "Colour",
   ]);
+  console.log(files);
   const navigate = useNavigate();
 
   function arraysHaveSameElements(arr1, arr2) {
-    // Convert arrays to sets
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
+    const set1 = new Set(arr1.map((element) => element.toLowerCase().trim()));
+    const set2 = new Set(arr2.map((element) => element.toLowerCase().trim()));
 
     // Check if the sets have the same size
     if (set1.size !== set2.size) {
@@ -55,9 +58,36 @@ const UploadFile = () => {
         "Body Type",
         "Odometer Reading",
         "Tenure",
-        "Retail",
+        "Usage",
+        "Transmission Type",
+        "Fuel Type",
+        "Colour",
       ],
     });
+    setRows([
+      [
+        "City",
+        "Make",
+        "Body Type",
+        "Odometer Reading",
+        "Tenure",
+        "Usage",
+        "Transmission Type",
+        "Fuel Type",
+        "Colour",
+      ],
+      [
+        "Bangalore",
+        "Toyota",
+        "SUV",
+        "120000",
+        13,
+        "Commercial",
+        "Manual",
+        "Petrol",
+        "Crimson Red",
+      ],
+    ]);
     postApi(APIAddress.DELETEMASTERDATA);
   }, []);
   useEffect(() => {
@@ -67,10 +97,12 @@ const UploadFile = () => {
           console.log(err);
         } else {
           // console.log(resp);
+          console.log(resp.rows);
 
           setRows(resp.rows);
         }
       });
+    } else {
     }
   }, [files]);
 
@@ -96,7 +128,16 @@ const UploadFile = () => {
     if (selectedOption == "existingModel") {
       if (
         arraysHaveSameElements(
-          ["City", "Model", "Odometer Reading", "Tenure", "Retail"],
+          [
+            "City",
+            "Model",
+            "Odometer Reading",
+            "Tenure",
+            "Usage",
+            "Transmission Type",
+            "Fuel Type",
+            "Colour",
+          ],
           jsonData.columnNames
         )
       ) {
@@ -115,7 +156,17 @@ const UploadFile = () => {
     } else if (selectedOption == "newModel") {
       if (
         arraysHaveSameElements(
-          ["City", "Make", "Body Type", "Odometer Reading", "Tenure", "Retail"],
+          [
+            "City",
+            "Make",
+            "Body Type",
+            "Odometer Reading",
+            "Tenure",
+            "Usage",
+            "Transmission Type",
+            "Fuel Type",
+            "Colour",
+          ],
           jsonData.columnNames
         )
       ) {
@@ -138,10 +189,65 @@ const UploadFile = () => {
 
   const handleRadioChange = (event) => {
     if (event.target.value == "existingModel") {
+      setRows([
+        [
+          "City",
+          "Model",
+          "Odometer Reading",
+          "Tenure",
+          "Usage",
+          "Transmission Type",
+          "Fuel Type",
+          "Colour",
+        ],
+        [
+          "Bangalore",
+          "Innova Crysta",
+          "1,20,000",
+          13,
+          "Commercial",
+          "Manual",
+          "Petrol",
+          "Red",
+        ],
+      ]);
       setSheetDate({
-        columnNames: ["City", "Model", "Odometer Reading", "Tenure", "Retail"],
+        columnNames: [
+          "City",
+          "Model",
+          "Odometer Reading",
+          "Tenure",
+          "Usage",
+          "Transmission Type",
+          "Fuel Type",
+          "Colour",
+        ],
       });
     } else {
+      setRows([
+        [
+          "City",
+          "Make",
+          "Body Type",
+          "Odometer Reading",
+          "Tenure",
+          "Usage",
+          "Transmission Type",
+          "Fuel Type",
+          "Colour",
+        ],
+        [
+          "Bangalore",
+          "Toyota",
+          "SUV",
+          120000,
+          13,
+          "Commercial",
+          "Manual",
+          "Petrol",
+          "Red",
+        ],
+      ]);
       setSheetDate({
         columnNames: [
           "City",
@@ -149,7 +255,10 @@ const UploadFile = () => {
           "Body Type",
           "Odometer Reading",
           "Tenure",
-          "Retail",
+          "Usage",
+          "Transmission Type",
+          "Fuel Type",
+          "Colour",
         ],
       });
     }
@@ -170,7 +279,10 @@ const UploadFile = () => {
         <NavigationBar></NavigationBar>
       </div>
 
-      <div className="Homepage-Upload-div" style={{ display: "block" }}>
+      <div
+        className="Homepage-Upload-div"
+        style={{ display: "block", marginTop: "2em" }}
+      >
         <h2 style={{ textAlign: "center" }}>Upload Excel/CSV File here.</h2>
         <FileUpload
           value={files}
@@ -210,7 +322,7 @@ const UploadFile = () => {
                 checked={selectedOption === "newModel"}
                 onChange={handleRadioChange}
               />
-              New Launches
+              For New Launches
             </label>
           </div>
           <div style={{}}>
@@ -242,10 +354,12 @@ const UploadFile = () => {
       >
         {sheetData ? (
           <>
-            {rows ? (
+            {files.length ? (
               <h2 style={{ textAlign: "center", width: "100%" }}>Preview</h2>
             ) : (
-              <h2>Sample Excel Columns</h2>
+              <h2 style={{ textAlign: "center", width: "100%" }}>
+                Sample Input Columns
+              </h2>
             )}
 
             <AgGridReact

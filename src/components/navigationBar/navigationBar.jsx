@@ -19,10 +19,11 @@ const NavigationBar = () => {
 
   return (
     <div
+      className="navigation-bar"
       style={{
-        background: "white",
         borderRadius: "10px",
         height: "6em",
+        backgroundColor: "azure",
       }}
     >
       <div

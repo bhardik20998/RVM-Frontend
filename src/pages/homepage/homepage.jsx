@@ -12,7 +12,7 @@ const Homepage = () => {
     navigate("/upload-file");
   };
   return (
-    <div className="homepage-div">
+    <div className="homepage-div" style={{ backgroundColor: "floralwhite" }}>
       <NavigationBar></NavigationBar>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <div>
@@ -22,7 +22,7 @@ const Homepage = () => {
 
               marginTop: "4em",
             }}
-            src="src/assets/homepage_background.png"
+            src="src/assets/car-sign.png"
           ></img>
         </div>
         <div className="center-container">
@@ -49,13 +49,13 @@ const Homepage = () => {
           </button> */}
         </div>
       </div>
-      <div style={{ display: "flex", marginLeft: "1em" }}>
-        <span style={{ marginBottom: "3px" }}>Powered by </span>
+      {/* <div style={{ display: "flex", marginLeft: "1em" }}>
+        <span style={{ marginBottom: "3px" }}>powered by </span>
         <img
-          style={{ width: "3em", marginLeft: "4px" }}
+          style={{ width: "6em", marginLeft: "4px" }}
           src="src/assets/logo-dhurin.png"
         ></img>
-      </div>
+      </div> */}
     </div>
   );
 };

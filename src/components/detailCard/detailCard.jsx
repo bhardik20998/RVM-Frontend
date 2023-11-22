@@ -4,10 +4,17 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 import Select from "react-select";
-import { getApi, getUniqueCities, postApi } from "../../functions/functions";
+import {
+  containsOnlyNumbers,
+  createObjectWithArray,
+  getApi,
+  getUniqueCities,
+  postApi,
+} from "../../functions/functions";
 import { APIAddress } from "../../constant";
 import { toast } from "react-toastify";
 import CreatableSelect from "react-select/creatable";
+import { Popover, Whisper } from "rsuite";
 
 const DetailCard = () => {
   const [result, setResult] = useState("");
@@ -15,7 +22,13 @@ const DetailCard = () => {
   const [brandArray, setBrandArray] = useState();
   const [modelArray, setModelArray] = useState();
   const [bodyTypeArray, setBodyTypeArray] = useState();
+  const [fuel, setFuel] = useState();
+  const [transmissionTypeArray, setTransmissionTypeArray] = useState();
+  const [totalKMS, setTotalKMS] = useState();
   const [selectedOption, setSelectedOption] = useState("newModel");
+  const [disabled, setDisabled] = useState({ peryear: false, total: false });
+  const [perYear, setPerYear] = useState("");
+
   const [formValues, setFormValues] = useState({
     City: "",
     Make: "",
@@ -25,6 +38,8 @@ const DetailCard = () => {
     Tenure: "",
     ml_model: "newModel",
     Retail: "",
+    Colour: "",
+    fuel_type_catalog: "",
   });
   const [loading, setLoading] = useState(false);
   const customStyles = {
@@ -49,11 +64,28 @@ const DetailCard = () => {
       setCityArray(getUniqueCities(res, "City"));
       setModelArray(getUniqueCities(res, "Model"));
       setBodyTypeArray(getUniqueCities(res, "Body Type"));
+      setTransmissionTypeArray(getUniqueCities(res, "transmission_type"));
+      setFuel(
+        createObjectWithArray(["Petrol", "Diesel", "CNG", "Hybrid", "EV"])
+      );
     });
   }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    if (name == "Odometer Reading Total") {
+      setDisabled({ peryear: true, total: false });
+    }
+    if (name == "Odometer Reading") {
+      setDisabled({ peryear: false, total: true });
+      setTotalKMS(parseFloat(formValues.Tenure) * parseFloat(value));
+      setFormValues({
+        ...formValues,
+        [name]:
+          parseFloat(formValues.Tenure) * parseFloat(value.replace(/\,/g, "")),
+      });
+    } else {
+      setFormValues({ ...formValues, [name]: value });
+    }
   };
   const submitHandler = (e) => {
     toast.info("Calculation in progress...");
@@ -107,6 +139,7 @@ const DetailCard = () => {
     }
     return true; // If all values are non-empty, return true
   }
+  console.log(perYear?.toLocaleString("en-GB"));
   return (
     <div className="container">
       <div className="screen">
@@ -135,9 +168,15 @@ const DetailCard = () => {
                   For Existing Car Models
                 </label>
               </div> */}
-              <div class="Toggle" style={{ display: "flex" }}>
-                <span style={{ marginTop: "14px", marginRight: "12px" }}>
-                  New Launches
+              <div className="Toggle" style={{ display: "flex" }}>
+                <span
+                  style={{
+                    marginTop: "14px",
+                    marginRight: "12px",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  For New Launches
                 </span>
                 <input
                   id="Checkbox1"
@@ -145,8 +184,12 @@ const DetailCard = () => {
                   type="checkbox"
                   onChange={handleRadioChange}
                 />
-                <label for="Checkbox1"> For Existing Car Models</label>
+                <label htmlFor="Checkbox1" style={{ fontWeight: "bolder" }}>
+                  {" "}
+                  For Existing Car Models
+                </label>
               </div>
+
               <div className="login__field">
                 <CreatableSelect
                   isClearable
@@ -169,8 +212,8 @@ const DetailCard = () => {
                   name="Retail"
                   closeMenuOnSelect={true}
                   options={[
-                    { value: "Retail", label: "Retail" },
                     { value: "Commercial", label: "Commercial" },
+                    { value: "Retail", label: "Retail" },
                   ]}
                   placeholder="Select Utility of Vehicle "
                   onChange={(selectedOption) => {
@@ -183,28 +226,51 @@ const DetailCard = () => {
               </div>
               {selectedOption == "newModel" ? (
                 <div>
-                  <div className="login__field">
-                    <Select
-                      styles={customStyles}
-                      name="Make"
-                      closeMenuOnSelect={true}
-                      options={brandArray}
-                      placeholder="Select Make"
-                      onChange={(selectedOption) => {
-                        setFormValues({
-                          ...formValues,
-                          Make: selectedOption["value"],
-                        }); // Update the 'city' property
-                      }}
-                    ></Select>
+                  <div>
+                    <div className="login__field">
+                      <Select
+                        key="b"
+                        styles={customStyles}
+                        name="Make"
+                        closeMenuOnSelect={true}
+                        options={brandArray}
+                        placeholder="Select Make"
+                        onChange={(selectedOption) => {
+                          setFormValues({
+                            ...formValues,
+                            Make: selectedOption["value"],
+                          }); // Update the 'city' property
+                        }}
+                      ></Select>
+                    </div>
+                  </div>
+                  <div>
+                    {" "}
+                    <div className="login__field">
+                      <Select
+                        key="c"
+                        styles={customStyles}
+                        name="Body Type"
+                        closeMenuOnSelect={true}
+                        options={bodyTypeArray}
+                        placeholder="Select Body Type"
+                        onChange={(selectedOption) => {
+                          setFormValues({
+                            ...formValues,
+                            "Body Type": selectedOption["value"],
+                          }); // Update the 'city' property
+                        }}
+                      ></Select>
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div>
                   <div className="login__field">
                     <Select
+                      key="a"
                       styles={customStyles}
-                      name="City"
+                      name="Model"
                       closeMenuOnSelect={true}
                       options={modelArray}
                       placeholder="Select Model"
@@ -218,26 +284,54 @@ const DetailCard = () => {
                   </div>
                 </div>
               )}
-              {selectedOption == "newModel" ? (
-                <div>
-                  {" "}
-                  <div className="login__field">
-                    <Select
-                      styles={customStyles}
-                      name="Body Type"
-                      closeMenuOnSelect={true}
-                      options={bodyTypeArray}
-                      placeholder="Select Body Type"
-                      onChange={(selectedOption) => {
-                        setFormValues({
-                          ...formValues,
-                          "Body Type": selectedOption["value"],
-                        }); // Update the 'city' property
-                      }}
-                    ></Select>
-                  </div>
+              {selectedOption == "newModel" ? null : null}
+              <div className="login__field">
+                <Select
+                  styles={customStyles}
+                  name="Fuel"
+                  closeMenuOnSelect={true}
+                  options={fuel}
+                  placeholder="Select Fuel Type"
+                  onChange={(selectedOption) => {
+                    setFormValues({
+                      ...formValues,
+                      fuel_type_catalog: selectedOption["value"],
+                    }); // Update the 'city' property
+                  }}
+                ></Select>
+              </div>
+              <div className="login__field">
+                <Select
+                  styles={customStyles}
+                  name="Transmission"
+                  closeMenuOnSelect={true}
+                  options={transmissionTypeArray}
+                  placeholder="Select Transmission Type"
+                  onChange={(selectedOption) => {
+                    setFormValues({
+                      ...formValues,
+                      transmission_type: selectedOption["value"],
+                    }); // Update the 'city' property
+                  }}
+                ></Select>
+              </div>
+              <div>
+                <div className="login__field">
+                  <CreatableSelect
+                    isClearable
+                    styles={customStyles}
+                    name="Colour"
+                    closeMenuOnSelect={true}
+                    placeholder="Select Colour"
+                    onChange={(selectedOption) => {
+                      setFormValues({
+                        ...formValues,
+                        Colour: selectedOption["value"],
+                      });
+                    }}
+                  ></CreatableSelect>
                 </div>
-              ) : null}
+              </div>
 
               <div style={{}} className="login__field">
                 <div>
@@ -249,14 +343,46 @@ const DetailCard = () => {
                       outline: "none",
                       boxShadow: "none",
                       borderRadius: "5px",
-                      padding: "2px",
+                      paddingLeft: "15px",
                     }}
                     type="number"
+                    className="homepage-input"
+                    id="Tenure"
+                    name="Tenure"
+                    placeholder="Enter Lease Tenure (Years)"
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div style={{}} className="login__field">
+                <div>
+                  <input
+                    type="text"
+                    style={{
+                      height: "2.8em",
+                      width: "28.8em",
+                      border: "none",
+                      outline: "none",
+                      boxShadow: "none",
+                      borderRadius: "5px",
+                      paddingLeft: "15px",
+                    }}
                     id="Odometer Reading"
                     name="Odometer Reading"
                     className="homepage-input"
-                    placeholder="   Enter Odometer Reading (Kms)"
-                    onChange={handleInputChange}
+                    placeholder="Kms Driven per year"
+                    disabled={disabled.peryear}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      const val = e.target.value;
+                      if (containsOnlyNumbers(val) || val === "")
+                        setPerYear(val.replace(/\,/g, ""));
+                    }}
+                    value={
+                      perYear && !isNaN(Number(perYear))
+                        ? Number(perYear)?.toLocaleString("en-IN")
+                        : ""
+                    }
                   />
                 </div>
               </div>
@@ -270,14 +396,33 @@ const DetailCard = () => {
                       outline: "none",
                       boxShadow: "none",
                       borderRadius: "5px",
-                      padding: "2px",
+                      paddingLeft: "15px",
                     }}
-                    type="number"
+                    disabled={disabled.total}
+                    type="text"
+                    id="Odometer Reading Total"
+                    name="Odometer Reading Total"
                     className="homepage-input"
-                    id="Tenure"
-                    name="Tenure"
-                    placeholder="   Enter Lease Tenure (Years)"
-                    onChange={handleInputChange}
+                    placeholder="Odometer Reading"
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      const val = e.target.value.replace(/\,/g, "");
+                      setFormValues({
+                        ...formValues,
+                        "Odometer Reading": val,
+                      });
+                      setPerYear(
+                        parseInt(parseInt(val) / parseInt(formValues.Tenure))
+                      );
+                    }}
+                    value={
+                      formValues["Odometer Reading"] &&
+                      !isNaN(Number(formValues["Odometer Reading"]))
+                        ? Number(
+                            formValues["Odometer Reading"]
+                          )?.toLocaleString("en-IN")
+                        : ""
+                    }
                   />
                 </div>
               </div>

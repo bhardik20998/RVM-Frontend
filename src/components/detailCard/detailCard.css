@@ -10,13 +10,13 @@
 .homepage-input::placeholder {
   font-size: 16px;
 }
+.homepage-input {
+  padding-left: 3px;
+}
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.input:not(:placeholder-shown) {
-  margin-left: 20px; /* Adjust the margin size as needed */
 }
 
 .screen {
@@ -24,7 +24,7 @@
   height: 42em;
   width: 40em;
 
-  margin-top: 3em;
+  margin-top: 0em;
 }
 
 .screen__content {
@@ -81,7 +81,7 @@
 }
 
 .login__field {
-  padding: 20px 0px;
+  padding: 10px 0px;
   position: relative;
 }
 

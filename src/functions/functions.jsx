@@ -54,30 +54,35 @@ export function getUniqueCities(data, filter) {
 
     // Check if the city is not already in the uniqueCities array
     if (!uniqueCities.includes(city)) {
-      
-      uniqueCities.push((city));
-
+      uniqueCities.push(city);
     }
   }
 
-  return createObjectWithArray((uniqueCities));
+  return createObjectWithArray(uniqueCities.sort());
 }
 
-function createObjectWithArray(values) {
+export function createObjectWithArray(values) {
   const obj = { value: [] };
 
   if (Array.isArray(values)) {
-    obj.value = values.map((value) => ({ value: value, label: capitalizeFirstLetterOfWord(value) }));
+    obj.value = values.map((value) => ({
+      value: value,
+      label: capitalizeFirstLetterOfWord(value),
+    }));
   }
 
   return obj.value;
 }
 
 export function capitalizeFirstLetterOfWord(word) {
-  if (typeof word !== 'string' || word.length === 0) {
-      return word;
+  if (typeof word !== "string" || word.length === 0) {
+    return word;
   }
 
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+export function containsOnlyNumbers(inputString) {
+  // Use a regular expression to check if the string contains only numbers
+  return /^[\d,]+$/.test(inputString);
+}
