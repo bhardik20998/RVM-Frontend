@@ -14,7 +14,13 @@ const Homepage = () => {
   return (
     <div className="homepage-div" style={{ backgroundColor: "floralwhite" }}>
       <NavigationBar></NavigationBar>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          marginTop: "5em",
+        }}
+      >
         <div>
           <img
             style={{

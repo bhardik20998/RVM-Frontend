@@ -24,6 +24,10 @@ const NavigationBar = () => {
         borderRadius: "10px",
         height: "6em",
         backgroundColor: "azure",
+        position: "fixed",
+        width: "100%",
+        top: "0",
+        zIndex: "99",
       }}
     >
       <div

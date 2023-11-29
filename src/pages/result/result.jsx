@@ -14,11 +14,23 @@ const Result = () => {
   useEffect(() => {
     postApi(APIAddress.RESULT, localStorage.getItem("Model")).then((res) => {
       console.log(res);
+
+      function formatIndianCommaStyle(car) {
+        if ("Odometer Reading" in car) {
+          car["Odometer Reading"] =
+            car["Odometer Reading"].toLocaleString("en-IN");
+        }
+        return car;
+      }
+      res = res.map(formatIndianCommaStyle);
       setRowData(res);
 
       setColumnNames(Object.keys(res[0]));
     });
   }, []);
+  const defaultColDef = {
+    width: 138, // Set the default width for all columns
+  };
 
   return (
     <div style={{ background: "white" }}>
@@ -27,13 +39,14 @@ const Result = () => {
       {rowData ? (
         <div
           className="ag-theme-alpine"
-          style={{ width: "100%", padding: "2em 4em" }}
+          style={{ width: "100%", padding: "2em 4em", marginTop: "7em" }}
         >
           <h2 style={{ textAlign: "center", width: "100%" }}>
             Estimated Residual Values
           </h2>
           <div style={{ marginTop: "2em" }}>
             <AgGridReact
+              defaultColDef={defaultColDef}
               columnDefs={columnNames?.map((res) => ({
                 field: res,
               }))}

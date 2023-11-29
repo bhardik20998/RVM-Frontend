@@ -28,9 +28,13 @@ const UploadFile = () => {
     "Colour",
   ]);
   console.log(files);
+  const defaultColDef = {
+    width: 180, // Set the default width for all columns
+  };
+
   const navigate = useNavigate();
 
-  function arraysHaveSameElements(arr1, arr2) {
+  async function arraysHaveSameElements(arr1, arr2) {
     const set1 = new Set(arr1.map((element) => element.toLowerCase().trim()));
     const set2 = new Set(arr2.map((element) => element.toLowerCase().trim()));
 
@@ -45,6 +49,8 @@ const UploadFile = () => {
         return false;
       }
     }
+
+    // const response = postApi("check-columns/",JSON.stringify({sample:set1, values:arr2}));
 
     // If we've reached this point, the arrays have the same elements
     return true;
@@ -281,7 +287,7 @@ const UploadFile = () => {
 
       <div
         className="Homepage-Upload-div"
-        style={{ display: "block", marginTop: "2em" }}
+        style={{ display: "block", marginTop: "7em" }}
       >
         <h2 style={{ textAlign: "center" }}>Upload Excel/CSV File here.</h2>
         <FileUpload
@@ -363,6 +369,7 @@ const UploadFile = () => {
             )}
 
             <AgGridReact
+              defaultColDef={defaultColDef}
               columnDefs={sheetData?.columnNames?.map((colName) => ({
                 field: colName,
               }))}

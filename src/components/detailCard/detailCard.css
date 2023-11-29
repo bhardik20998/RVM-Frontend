@@ -236,7 +236,7 @@
   width: 4rem;
   aspect-ratio: 2 / 1;
   border-radius: 1rem;
-  background: #eee;
+  background: #b7f5f5;
 }
 
 .Toggle input[type="checkbox"] + label::after {
@@ -261,9 +261,9 @@
 .Range input[type="range"]::-webkit-slider-thumb,
 .Color input::-webkit-color-swatch {
   aspect-ratio: 1 / 1;
-  border: 0.1rem solid #fff;
+  border: 0.2rem solid #fff;
   border-radius: 50%;
-  background: radial-gradient(circle at 70% 30%, #fff, rgba(0, 0, 0, 0) 25%),
+  background: radial-gradient(circle at 70% 30%, #fff, rgba(0, 0, 0) 25%),
     radial-gradient(
       circle at 60% 55%,
       rgba(0, 0, 0, 0) 60%,

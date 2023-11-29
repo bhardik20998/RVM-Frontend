@@ -176,7 +176,7 @@ const DetailCard = () => {
                     fontWeight: "bolder",
                   }}
                 >
-                  For New Launches
+                  New Launches
                 </span>
                 <input
                   id="Checkbox1"
@@ -186,7 +186,7 @@ const DetailCard = () => {
                 />
                 <label htmlFor="Checkbox1" style={{ fontWeight: "bolder" }}>
                   {" "}
-                  For Existing Car Models
+                  Existing Car Models
                 </label>
               </div>
 
@@ -450,7 +450,7 @@ const DetailCard = () => {
                   width: "29em",
                   marginLeft: "auto",
                   marginRight: "auto",
-                  background: "greenyellow",
+                  background: "azure",
                 }}
                 onClick={submitHandler}
               >
