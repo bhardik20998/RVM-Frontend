@@ -6,4 +6,26 @@ export const APIAddress = {
   DETAILCARDVALUES: "det-values/",
   YSINGLE: "calculate_Y_single/",
   DELETEMASTERDATA: "delete-master-data/",
+  CHECKSTRINGS: "check-columns/",
 };
+export const newLaunchesColumns = [
+  "City",
+  "Make",
+  "Body Type",
+  "Odometer Reading",
+  "Tenure",
+  "Usage",
+  "Transmission Type",
+  "Fuel Type",
+  "Colour",
+];
+export const existingColumns = [
+  "City",
+  "Model",
+  "Odometer Reading",
+  "Tenure",
+  "Usage",
+  "Transmission Type",
+  "Fuel Type",
+  "Colour",
+];

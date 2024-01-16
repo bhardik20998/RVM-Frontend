@@ -59,12 +59,17 @@ const DetailCard = () => {
 
   useEffect(() => {
     postApi(APIAddress.DETAILCARDVALUES).then((res) => {
-      // console.log(res);
       setBrandArray(getUniqueCities(res, "Make"));
       setCityArray(getUniqueCities(res, "City"));
       setModelArray(getUniqueCities(res, "Model"));
       setBodyTypeArray(getUniqueCities(res, "Body Type"));
-      setTransmissionTypeArray(getUniqueCities(res, "transmission_type"));
+      setTransmissionTypeArray(
+        createObjectWithArray([
+          "Automatic",
+          "Manual",
+          "IMT (Intelligent Manual Transmission)",
+        ])
+      );
       setFuel(
         createObjectWithArray(["Petrol", "Diesel", "CNG", "Hybrid", "EV"])
       );
@@ -112,14 +117,49 @@ const DetailCard = () => {
     console.log(event.target.checked);
     if (event.target.checked == false) {
       setSelectedOption("newModel");
-      setFormValues({ ...formValues, ml_model: "newModel" });
+      setFormValues({
+        City: "",
+        Make: "",
+        Model: "",
+        "Body Type": "",
+        "Odometer Reading": "",
+        Tenure: "",
+        ml_model: "newModel",
+        Retail: "",
+        Colour: "",
+        fuel_type_catalog: "",
+      });
       setResult("");
+      setPerYear("");
+      setDisabled({ peryear: false, total: false });
     } else {
       setSelectedOption("existingModel");
-      setFormValues({ ...formValues, ml_model: "existingModel" });
+      setFormValues({
+        City: "",
+        Make: "",
+        Model: "",
+        "Body Type": "",
+        "Odometer Reading": "",
+        Tenure: "",
+        ml_model: "existingModel",
+        Retail: "",
+        Colour: "",
+        fuel_type_catalog: "",
+      });
+      setPerYear("");
       setResult("");
+      setDisabled({ peryear: false, total: false });
     }
   };
+  function checkCity(city) {
+    const array = [...city];
+    for (let x = 0; x < array.length; x++) {
+      if (!isNaN(parseInt(array[x]))) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   function isFormValid(formValues) {
     if (selectedOption == "newModel") {
@@ -129,45 +169,25 @@ const DetailCard = () => {
       delete formValues.Make;
       delete formValues["Body Type"];
     }
-    for (const key in formValues) {
-      if (formValues.hasOwnProperty(key)) {
-        const value = formValues[key];
-        if (!value) {
-          return false; // If any value is empty, return false
+    const flag = checkCity(formValues.City);
+    if (formValues.City)
+      for (const key in formValues) {
+        if (formValues.hasOwnProperty(key)) {
+          const value = formValues[key];
+          if (!value) {
+            return false && flag; // If any value is empty, return false
+          }
         }
       }
-    }
-    return true; // If all values are non-empty, return true
+    return true && flag; // If all values are non-empty, return true
   }
-  console.log(perYear?.toLocaleString("en-GB"));
+
   return (
     <div className="container">
       <div className="screen">
         <div className="screen__content">
           <form className="login" style={{ width: "100%" }}>
             <div style={{ display: "grid", justifyContent: "center" }}>
-              {/* <div style={{ paddingLeft: "12px" }}>
-                <label>
-                  <input
-                    type="radio"
-                    value="newModel"
-                    checked={selectedOption === "newModel"}
-                    onChange={handleRadioChange}
-                  />
-                  New Launches
-                </label>
-              </div>
-              <div style={{ paddingLeft: "12px" }}>
-                <label>
-                  <input
-                    type="radio"
-                    value="existingModel"
-                    checked={selectedOption === "existingModel"}
-                    onChange={handleRadioChange}
-                  />
-                  For Existing Car Models
-                </label>
-              </div> */}
               <div className="Toggle" style={{ display: "flex" }}>
                 <span
                   style={{
@@ -284,76 +304,159 @@ const DetailCard = () => {
                   </div>
                 </div>
               )}
-              {selectedOption == "newModel" ? null : null}
-              <div className="login__field">
-                <Select
-                  styles={customStyles}
-                  name="Fuel"
-                  closeMenuOnSelect={true}
-                  options={fuel}
-                  placeholder="Select Fuel Type"
-                  onChange={(selectedOption) => {
-                    setFormValues({
-                      ...formValues,
-                      fuel_type_catalog: selectedOption["value"],
-                    }); // Update the 'city' property
-                  }}
-                ></Select>
-              </div>
-              <div className="login__field">
-                <Select
-                  styles={customStyles}
-                  name="Transmission"
-                  closeMenuOnSelect={true}
-                  options={transmissionTypeArray}
-                  placeholder="Select Transmission Type"
-                  onChange={(selectedOption) => {
-                    setFormValues({
-                      ...formValues,
-                      transmission_type: selectedOption["value"],
-                    }); // Update the 'city' property
-                  }}
-                ></Select>
-              </div>
-              <div>
-                <div className="login__field">
-                  <CreatableSelect
-                    isClearable
-                    styles={customStyles}
-                    name="Colour"
-                    closeMenuOnSelect={true}
-                    placeholder="Select Colour"
-                    onChange={(selectedOption) => {
-                      setFormValues({
-                        ...formValues,
-                        Colour: selectedOption["value"],
-                      });
-                    }}
-                  ></CreatableSelect>
-                </div>
-              </div>
 
-              <div style={{}} className="login__field">
+              {selectedOption == "newModel" ? (
                 <div>
-                  <input
-                    style={{
-                      height: "2.8em",
-                      width: "28.8em",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: "none",
-                      borderRadius: "5px",
-                      paddingLeft: "15px",
-                    }}
-                    type="number"
-                    className="homepage-input"
-                    id="Tenure"
-                    name="Tenure"
-                    placeholder="Enter Lease Tenure (Years)"
-                    onChange={handleInputChange}
-                  />
+                  <div className="login__field">
+                    <Select
+                      key="d"
+                      styles={customStyles}
+                      name="Fuel"
+                      closeMenuOnSelect={true}
+                      options={fuel}
+                      placeholder="Select Fuel Type"
+                      onChange={(selectedOption) => {
+                        setFormValues({
+                          ...formValues,
+                          fuel_type_catalog: selectedOption["value"],
+                        }); // Update the 'city' property
+                      }}
+                    ></Select>
+                  </div>
+                  <div className="login__field">
+                    <Select
+                      key="e"
+                      styles={customStyles}
+                      name="Transmission"
+                      closeMenuOnSelect={true}
+                      options={transmissionTypeArray}
+                      placeholder="Select Transmission Type"
+                      onChange={(selectedOption) => {
+                        setFormValues({
+                          ...formValues,
+                          transmission_type: selectedOption["value"],
+                        }); // Update the 'city' property
+                      }}
+                    ></Select>
+                  </div>
+                  <div>
+                    <div className="login__field">
+                      <CreatableSelect
+                        key="f"
+                        isClearable
+                        styles={customStyles}
+                        name="Colour"
+                        closeMenuOnSelect={true}
+                        placeholder="Select Colour"
+                        onChange={(selectedOption) => {
+                          setFormValues({
+                            ...formValues,
+                            Colour: selectedOption["value"],
+                          });
+                        }}
+                      ></CreatableSelect>
+                    </div>
+                  </div>
+                  <div style={{}} className="login__field">
+                    <div>
+                      <input
+                        key="g"
+                        style={{
+                          height: "2.8em",
+                          width: "28.8em",
+                          border: "none",
+                          outline: "none",
+                          boxShadow: "none",
+                          borderRadius: "5px",
+                          paddingLeft: "15px",
+                        }}
+                        type="number"
+                        className="homepage-input"
+                        id="Tenure"
+                        name="Tenure"
+                        placeholder="Enter Lease Tenure (Years)"
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <div className="login__field">
+                    <Select
+                      key="h"
+                      styles={customStyles}
+                      name="Fuel"
+                      closeMenuOnSelect={true}
+                      options={fuel}
+                      placeholder="Select Fuel Type"
+                      onChange={(selectedOption) => {
+                        setFormValues({
+                          ...formValues,
+                          fuel_type_catalog: selectedOption["value"],
+                        }); // Update the 'city' property
+                      }}
+                    ></Select>
+                  </div>
+                  <div className="login__field">
+                    <Select
+                      key="i"
+                      styles={customStyles}
+                      name="Transmission"
+                      closeMenuOnSelect={true}
+                      options={transmissionTypeArray}
+                      placeholder="Select Transmission Type"
+                      onChange={(selectedOption) => {
+                        setFormValues({
+                          ...formValues,
+                          transmission_type: selectedOption["value"],
+                        }); // Update the 'city' property
+                      }}
+                    ></Select>
+                  </div>
+                  <div>
+                    <div className="login__field">
+                      <CreatableSelect
+                        key="j"
+                        isClearable
+                        styles={customStyles}
+                        name="Colour"
+                        closeMenuOnSelect={true}
+                        placeholder="Select Colour"
+                        onChange={(selectedOption) => {
+                          setFormValues({
+                            ...formValues,
+                            Colour: selectedOption["value"],
+                          });
+                        }}
+                      ></CreatableSelect>
+                    </div>
+                  </div>
+                  <div style={{}} className="login__field">
+                    <div>
+                      <input
+                        key="k"
+                        style={{
+                          height: "2.8em",
+                          width: "28.8em",
+                          border: "none",
+                          outline: "none",
+                          boxShadow: "none",
+                          borderRadius: "5px",
+                          paddingLeft: "15px",
+                        }}
+                        type="number"
+                        className="homepage-input"
+                        id="Tenure"
+                        name="Tenure"
+                        placeholder="Enter Lease Tenure (Years)"
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div style={{}} className="login__field">
                 <div>
                   <input
@@ -460,7 +563,7 @@ const DetailCard = () => {
                   >
                     <div>
                       {" "}
-                      <div>Residual Value</div>{" "}
+                      <div>Residual Value</div> {console.log(result[0])}
                       <div>{parseInt(result[0]?.toFixed(3) * 100)}%</div>
                     </div>
                     <div>

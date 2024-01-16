@@ -22,6 +22,7 @@ const Result = () => {
         }
         return car;
       }
+      console.log(res);
       res = res.map(formatIndianCommaStyle);
       setRowData(res);
 
@@ -39,7 +40,7 @@ const Result = () => {
       {rowData ? (
         <div
           className="ag-theme-alpine"
-          style={{ width: "100%", padding: "2em 4em", marginTop: "7em" }}
+          style={{ width: "100%", padding: "1em 2em", marginTop: "7em" }}
         >
           <h2 style={{ textAlign: "center", width: "100%" }}>
             Estimated Residual Values

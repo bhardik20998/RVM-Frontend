@@ -9,84 +9,132 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { APIAddress } from "../../constant";
+import {
+  APIAddress,
+  existingColumns,
+  newLaunchesColumns,
+} from "../../constant";
 
 const UploadFile = () => {
   const [files, setFiles] = useState([]);
   const [selectedOption, setSelectedOption] = useState("newModel");
   const [rows, setRows] = useState([]);
   const [sheetData, setSheetDate] = useState(null);
-  const [preview, setPreview] = useState([
-    "City",
-    "Make",
-    "Body Type",
-    "Odometer Reading",
-    "Tenure",
-    "Retail",
-    "Transmission Type",
-    "Fuel Type",
-    "Colour",
-  ]);
-  console.log(files);
+
+  // console.log(files);
   const defaultColDef = {
-    width: 180, // Set the default width for all columns
+    width: 148, // Set the default width for all columns
   };
 
   const navigate = useNavigate();
 
-  async function arraysHaveSameElements(arr1, arr2) {
-    const set1 = new Set(arr1.map((element) => element.toLowerCase().trim()));
-    const set2 = new Set(arr2.map((element) => element.toLowerCase().trim()));
+  function arraysHaveSameElements(baseArray, enteredArray) {
+    function checkStrings(baseString, enteredString) {
+      if (baseString == "Odometer Reading") {
+        if (enteredString.toLowerCase() == "odometer reading") {
+          console.log(baseString, enteredString);
+          return true;
+        }
+        if (enteredString.toLowerCase() == "kms driven per year") {
+          console.log(baseString, enteredString);
+          return true;
+        }
+      }
 
-    // Check if the sets have the same size
-    if (set1.size !== set2.size) {
-      return false;
-    }
+      if (baseString == enteredString) {
+        return true;
+      }
+      if (
+        baseString.length === enteredString.length &&
+        [...baseString].filter((char, index) => char !== enteredString[index])
+          .length === 1
+      ) {
+        return true;
+      }
 
-    // Check if set1 contains all elements from set2
-    for (const element of set2) {
-      if (!set1.has(element)) {
-        return false;
+      // If the strings have more than 5 characters, allow two differences
+      if (
+        baseString.length > 5 &&
+        enteredString.length > 5 &&
+        [...baseString].filter((char, index) => char !== enteredString[index])
+          .length <= 2
+      ) {
+        return true;
       }
     }
 
-    // const response = postApi("check-columns/",JSON.stringify({sample:set1, values:arr2}));
+    for (let x of baseArray) {
+      let flag = false;
+      // console.log(x);
 
-    // If we've reached this point, the arrays have the same elements
+      for (let y of enteredArray) {
+        if (checkStrings(x, y)) {
+          flag = true;
+        }
+      }
+      if (flag == false) {
+        toast.error("Did not find match for " + x);
+        return false;
+      }
+    }
+    return true;
+
+    // // Check if the sets have the same size
+    // if (set1.size !== set2.size) {
+    //   return false;
+    // }
+
+    // // Check if set1 contains all elements from set2
+    // for (const element of set2) {
+    //   if (!set1.has(element)) {
+    //     return false;
+    //   }
+    // }
+
+    // // If we've reached this point, the arrays have the same elements
+    // return true;
+  }
+  function hasTwoInts(arr) {
+    return true;
+    let countInts = 0;
+    console.log(arr);
+
+    for (let element of arr) {
+      if (Number.isInteger(element)) {
+        countInts++;
+
+        // If we already found two integers, return true
+        if (countInts >= 2) {
+          return true;
+        }
+      }
+    }
+  }
+
+  function checkTenureOdometerReading(arr) {
+    for (let obj of arr) {
+      const tenureIsNumeric = hasTwoInts(obj);
+      const odometerIsNumeric = hasTwoInts(obj);
+      // console.log(tenureIsNumeric, odometerIsNumeric);
+
+      if (!tenureIsNumeric || !odometerIsNumeric) {
+        return false;
+      }
+    }
     return true;
   }
 
   useEffect(() => {
     setSheetDate({
-      columnNames: [
-        "City",
-        "Make",
-        "Body Type",
-        "Odometer Reading",
-        "Tenure",
-        "Usage",
-        "Transmission Type",
-        "Fuel Type",
-        "Colour",
-      ],
+      columnNames: newLaunchesColumns,
     });
     setRows([
-      [
-        "City",
-        "Make",
-        "Body Type",
-        "Odometer Reading",
-        "Tenure",
-        "Usage",
-        "Transmission Type",
-        "Fuel Type",
-        "Colour",
-      ],
+      newLaunchesColumns,
       [
         "Bangalore",
         "Toyota",
         "SUV",
-        "120000",
+        "1,20,000",
         13,
         "Commercial",
         "Manual",
@@ -103,7 +151,7 @@ const UploadFile = () => {
           console.log(err);
         } else {
           // console.log(resp);
-          console.log(resp.rows);
+          // console.log(resp.rows);
 
           setRows(resp.rows);
         }
@@ -132,21 +180,9 @@ const UploadFile = () => {
     };
     localStorage.setItem("Model", selectedOption);
     if (selectedOption == "existingModel") {
-      if (
-        arraysHaveSameElements(
-          [
-            "City",
-            "Model",
-            "Odometer Reading",
-            "Tenure",
-            "Usage",
-            "Transmission Type",
-            "Fuel Type",
-            "Colour",
-          ],
-          jsonData.columnNames
-        )
-      ) {
+      let flag = arraysHaveSameElements(existingColumns, jsonData.columnNames);
+
+      if (flag && checkTenureOdometerReading(jsonData.dataRows)) {
         postApi(APIAddress.SAVE, JSON.stringify(jsonData))
           .then((response) => {
             toast.success(response.message);
@@ -160,22 +196,13 @@ const UploadFile = () => {
         toast.error("Columns in excel are not correct.");
       }
     } else if (selectedOption == "newModel") {
-      if (
-        arraysHaveSameElements(
-          [
-            "City",
-            "Make",
-            "Body Type",
-            "Odometer Reading",
-            "Tenure",
-            "Usage",
-            "Transmission Type",
-            "Fuel Type",
-            "Colour",
-          ],
-          jsonData.columnNames
-        )
-      ) {
+      let flag = arraysHaveSameElements(
+        newLaunchesColumns,
+        jsonData.columnNames
+      );
+      console.log(flag);
+      console.log(checkTenureOdometerReading(jsonData.dataRows));
+      if (flag && checkTenureOdometerReading(jsonData.dataRows)) {
         postApi(APIAddress.SAVE, JSON.stringify(jsonData))
           .then((response) => {
             toast.success(response.message);
@@ -186,26 +213,17 @@ const UploadFile = () => {
             toast.error(error);
           });
       } else {
-        toast.error("Columns in excel are not correct.");
+        toast.error("Column names are not correct.");
       }
     } else {
-      toast.error("Columns in excel are not correct.");
+      toast.error("Column names are not correct.");
     }
   };
 
   const handleRadioChange = (event) => {
     if (event.target.value == "existingModel") {
       setRows([
-        [
-          "City",
-          "Model",
-          "Odometer Reading",
-          "Tenure",
-          "Usage",
-          "Transmission Type",
-          "Fuel Type",
-          "Colour",
-        ],
+        existingColumns,
         [
           "Bangalore",
           "Innova Crysta",
@@ -218,35 +236,16 @@ const UploadFile = () => {
         ],
       ]);
       setSheetDate({
-        columnNames: [
-          "City",
-          "Model",
-          "Odometer Reading",
-          "Tenure",
-          "Usage",
-          "Transmission Type",
-          "Fuel Type",
-          "Colour",
-        ],
+        columnNames: existingColumns,
       });
     } else {
       setRows([
-        [
-          "City",
-          "Make",
-          "Body Type",
-          "Odometer Reading",
-          "Tenure",
-          "Usage",
-          "Transmission Type",
-          "Fuel Type",
-          "Colour",
-        ],
+        newLaunchesColumns,
         [
           "Bangalore",
           "Toyota",
           "SUV",
-          120000,
+          "1,20,000",
           13,
           "Commercial",
           "Manual",
@@ -255,17 +254,7 @@ const UploadFile = () => {
         ],
       ]);
       setSheetDate({
-        columnNames: [
-          "City",
-          "Make",
-          "Body Type",
-          "Odometer Reading",
-          "Tenure",
-          "Usage",
-          "Transmission Type",
-          "Fuel Type",
-          "Colour",
-        ],
+        columnNames: newLaunchesColumns,
       });
     }
     localStorage.setItem("model", event.target.value);
